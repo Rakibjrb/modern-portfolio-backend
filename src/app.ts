@@ -89,7 +89,7 @@ app.use("/api", catchAsync(async (req: Request, res: Response, next: NextFunctio
 // 7. Server health check
 app.get("/", (req: Request, res: Response) => {
     const client = req.headers["user-agent"]?.toLocaleLowerCase();
-    const getClientMessage = (clientType: string) => `Welcome to employee management system ${env.NODE_ENV === "development" ? "development" : "production"} environment API call from ${clientType}`
+    const getClientMessage = (clientType: string) => `Welcome to Modern Portfolio ${env.NODE_ENV === "development" ? "development" : "production"} environment API call from ${clientType}`
     const responseData = {
         version: env.APP_VERSION,
         environment: env.NODE_ENV === "development" ? "development" : "production",

@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { AuthRoutes } from "../modules/auth/routes/auth.routes";
 
 interface IRoute {
     path: string;
@@ -8,7 +9,12 @@ interface IRoute {
 const router = Router();
 
 
-const moduleRoutes: IRoute[] = []
+const moduleRoutes: IRoute[] = [
+    {
+        path: "/auth",
+        router: AuthRoutes
+    }
+]
 
 moduleRoutes.forEach((routes: IRoute) => {
     router.use(routes.path, routes.router)

@@ -12,5 +12,9 @@ export default {
     APP_VERSION: process.env.APP_VERSION || '1.0.0',
     BCRYPT_SALT_ROUNDS: process.env.BCRYPT_SALT_ROUNDS || 10,
     CLUSTER_URL: process.env.CLUSTER_URL as string,
-    DATABASE_NAME: process.env.DATABASE_NAME as string
+    DATABASE_NAME: process.env.DATABASE_NAME as string,
+    AUTH_TOKEN_SECRET: process.env.AUTH_TOKEN_SECRET as string,
+    REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET as string,
+    AUTH_TOKEN_EXPIRE_IN: process.env.AUTH_TOKEN_EXPIRE_IN as string,
+    REFRESH_TOKEN_EXPIRE_IN: process.env.REFRESH_TOKEN_EXPIRE_IN as string,
 }
