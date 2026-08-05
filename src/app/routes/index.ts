@@ -3,6 +3,7 @@ import { AuthRoutes } from "../modules/auth/routes/auth.routes";
 import { ProjectRoutes } from "../modules/project-management/routes/project.routes";
 import { uploadRoutes } from "../modules/shared/routes/upload.routes";
 import { AboutRoutes } from "../modules/about/routes/about.routes";
+import { ContactRoutes } from "../modules/contact/routes/contact.routes";
 
 interface IRoute {
     path: string;
@@ -28,6 +29,10 @@ const moduleRoutes: IRoute[] = [
     {
         path: "/about",
         router: AboutRoutes
+    },
+    {
+        path: "/contacts",
+        router: ContactRoutes
     }
 ]
 
