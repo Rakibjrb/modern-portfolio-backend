@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 
-type TMeta = {
+export type TMeta = {
     limit?: number;
     page?: number;
     total?: number;
     totalPages?: number;
 }
 
-type TResponse<T> = {
+export type TResponse<T> = {
     statusCode: number;
     success: boolean;
     message: string;

@@ -30,7 +30,9 @@ const app: Application = express();
 // 1. Security & Performance Middleware
 app.use(helmet());
 app.use(compression() as unknown as RequestHandler)
-app.use(morgan("dev"));
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+}
 
 // General Rate Limiting
 const generalRateLimiter = rateLimit({
@@ -51,7 +53,7 @@ const generalRateLimiter = rateLimit({
 // })
 
 // 2. CORS Setup
-const allAllowedOrigins = [env.FRONTEND_URL, "http://localhost:3000"]; // incluedes all allowed origins here
+const allAllowedOrigins = [env.FRONTEND_URL, env.ADMIN_DASHBOARD_PANEL_URL]; // incluedes all allowed origins here
 
 
 export const corsOptions = {
@@ -89,7 +91,7 @@ app.use("/api", catchAsync(async (req: Request, res: Response, next: NextFunctio
 // 7. Server health check
 app.get("/", (req: Request, res: Response) => {
     const client = req.headers["user-agent"]?.toLocaleLowerCase();
-    const getClientMessage = (clientType: string) => `Welcome to employee management system ${env.NODE_ENV === "development" ? "development" : "production"} environment API call from ${clientType}`
+    const getClientMessage = (clientType: string) => `Welcome to Modern Portfolio ${env.NODE_ENV === "development" ? "development" : "production"} environment API call from ${clientType}`
     const responseData = {
         version: env.APP_VERSION,
         environment: env.NODE_ENV === "development" ? "development" : "production",
