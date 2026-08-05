@@ -6,11 +6,12 @@ dotenv.config({
 })
 
 export default {
-    NODE_ENV: process.env.NODE_ENV || 'development',
+    FRONTEND_URL: process.env.FRONTEND_URL, // main application origin
+    ADMIN_DASHBOARD_PANEL_URL: process.env.ADMIN_DASHBOARD_PANEL_URL, // admin dashboard panel origin
+    NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT || 8001,
-    FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:3000',
-    APP_VERSION: process.env.APP_VERSION || '1.0.0',
-    BCRYPT_SALT_ROUNDS: process.env.BCRYPT_SALT_ROUNDS || 10,
+    APP_VERSION: process.env.APP_VERSION,
+    BCRYPT_SALT_ROUNDS: process.env.BCRYPT_SALT_ROUNDS,
     CLUSTER_URL: process.env.CLUSTER_URL as string,
     DATABASE_NAME: process.env.DATABASE_NAME as string,
     AUTH_TOKEN_SECRET: process.env.AUTH_TOKEN_SECRET as string,
