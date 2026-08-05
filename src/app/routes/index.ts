@@ -2,6 +2,7 @@ import { Router } from "express";
 import { AuthRoutes } from "../modules/auth/routes/auth.routes";
 import { ProjectRoutes } from "../modules/project-management/routes/project.routes";
 import { uploadRoutes } from "../modules/shared/routes/upload.routes";
+import { AboutRoutes } from "../modules/about/routes/about.routes";
 
 interface IRoute {
     path: string;
@@ -23,6 +24,10 @@ const moduleRoutes: IRoute[] = [
     {
         path: "/public",
         router: uploadRoutes
+    },
+    {
+        path: "/about",
+        router: AboutRoutes
     }
 ]
 
