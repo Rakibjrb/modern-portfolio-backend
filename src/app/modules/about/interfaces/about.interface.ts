@@ -16,4 +16,5 @@ export interface IAbout extends Document {
         email: string;
     }
     socialsLinks: { iconUrl: string; name: string; url: string }[];
+    skills: { iconUrl: string; name: string }[];
 }

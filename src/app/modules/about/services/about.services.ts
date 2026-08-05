@@ -12,7 +12,6 @@ const createOrUpdateAbout = async (payload: Partial<IAbout>): Promise<IAbout> =>
     const existingAbout = await About.findOne();
 
     if (existingAbout) {
-        // Deep merge contacts if provided partially
         if (payload.contacts) {
             payload.contacts = {
                 ...existingAbout.contacts,
@@ -53,8 +52,14 @@ const updateAbout = async (id: string, payload: Partial<IAbout>): Promise<IAbout
     return updated;
 };
 
+const getSkills = async (): Promise<IAbout | null> => {
+    const result = await About.findOne({}, "skills");
+    return result;
+};
+
 export const AboutService = {
     getAbout,
     createOrUpdateAbout,
     updateAbout,
+    getSkills,
 };

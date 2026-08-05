@@ -6,6 +6,11 @@ const socialLinkSchema = z.object({
     url: z.string({ required_error: "Social profile URL is required" }),
 });
 
+const skillSchema = z.object({
+    iconUrl: z.string({ required_error: "Icon URL is required" }),
+    name: z.string({ required_error: "Skill name is required" }),
+});
+
 const createAboutReq = z.object({
     body: z.object({
         image: z.string({ required_error: "Image is required" }),
@@ -23,6 +28,7 @@ const createAboutReq = z.object({
             email: z.string({ required_error: "Email is required" }).email("Invalid email format"),
         }),
         socialsLinks: z.array(socialLinkSchema).default([]),
+        skills: z.array(skillSchema).default([]),
     }),
 });
 
@@ -43,6 +49,7 @@ const updateAboutReq = z.object({
             email: z.string().email("Invalid email format").optional(),
         }).optional(),
         socialsLinks: z.array(socialLinkSchema).optional(),
+        skills: z.array(skillSchema).optional(),
     }),
 });
 

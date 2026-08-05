@@ -15,6 +15,17 @@ const getAbout = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const getSkills = catchAsync(async (req: Request, res: Response) => {
+    const result = await AboutService.getSkills();
+
+    sendResponse(req, res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Skills retrieved successfully",
+        data: result,
+    });
+})
+
 const createOrUpdateAbout = catchAsync(async (req: Request, res: Response) => {
     const result = await AboutService.createOrUpdateAbout(req.body);
 
@@ -40,6 +51,7 @@ const updateAbout = catchAsync(async (req: Request, res: Response) => {
 
 export const AboutController = {
     getAbout,
+    getSkills,
     createOrUpdateAbout,
     updateAbout,
 };

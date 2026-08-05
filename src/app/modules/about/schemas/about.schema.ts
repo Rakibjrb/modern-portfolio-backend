@@ -62,6 +62,12 @@ const aboutSchema = new Schema<IAbout>(
                 url: { type: String, required: true },
             },
         ],
+        skills: [
+            {
+                iconUrl: { type: String, required: true },
+                name: { type: String, required: true },
+            },
+        ],
     },
     {
         timestamps: true,

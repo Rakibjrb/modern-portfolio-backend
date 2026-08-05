@@ -11,6 +11,8 @@ router.get(
     AboutController.getAbout
 );
 
+router.get("/skills", AboutController.getSkills)
+
 router.post(
     "/",
     auth("super_admin"),
