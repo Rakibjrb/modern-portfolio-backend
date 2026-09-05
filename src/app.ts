@@ -97,18 +97,11 @@ app.get("/", (req: Request, res: Response) => {
         environment: env.NODE_ENV === "development" ? "development" : "production",
         apiPath: req.originalUrl,
     }
-    if (client?.includes("postman") || client?.includes("mobile") || client?.includes("mozila")) {
-        sendResponse(req, res, {
-            statusCode: 200,
-            success: true,
-            message: getClientMessage(client),
-            data: responseData,
-        })
-    }
+
     return sendResponse(req, res, {
         statusCode: 200,
         success: true,
-        message: "Welcome to employee management system API call",
+        message: getClientMessage(client),
         data: responseData,
     })
 });
