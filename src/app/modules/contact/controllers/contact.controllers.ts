@@ -5,8 +5,8 @@ import sendResponse from "../../../utils/sendResponse";
 import { ContactService } from "../services/contact.services";
 
 const createContact = catchAsync(async (req: Request, res: Response) => {
-    const { token, email, name, message } = req.body;
-    const result = await ContactService.createContact(token, { email, name, message });
+    const { email, name, message } = req.body;
+    const result = await ContactService.createContact({ email, name, message });
 
     sendResponse(req, res, {
         statusCode: httpStatus.CREATED,

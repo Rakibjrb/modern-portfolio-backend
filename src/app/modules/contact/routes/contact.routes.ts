@@ -3,6 +3,7 @@ import validateRequest from "../../../middlewares/validateRequest";
 import auth from "../../../middlewares/auth.middlewares";
 import { ContactValidation } from "../validations/contact.validations";
 import { ContactController } from "../controllers/contact.controllers";
+import { contactRateLimiter } from "../../../middlewares/ratelimiter.middleware";
 
 const router = Router();
 
@@ -20,6 +21,7 @@ router.get(
 
 router.post(
     "/",
+    contactRateLimiter,
     validateRequest(ContactValidation.createContactReq),
     ContactController.createContact
 );

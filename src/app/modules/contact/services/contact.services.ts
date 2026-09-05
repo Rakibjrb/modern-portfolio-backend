@@ -5,13 +5,8 @@ import IContact from "../interfaces/contact.interface";
 import { Contact } from "../schemas/contact.schema";
 import { TMeta } from "../../../utils/sendResponse";
 import { NodemailerManager } from "../../../managers/nodemailer.manager";
-import env from "../../../config/env";
 
-const createContact = async (token: string, payload: Partial<IContact>): Promise<IContact> => {
-    if (env.FRONTEND_FORM_TOKEN !== token) {
-        throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized");
-    }
-
+const createContact = async (payload: Partial<IContact>): Promise<IContact> => {
     const result = await Contact.create(payload);
 
     // Send emails asynchronously to user and admin

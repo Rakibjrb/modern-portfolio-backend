@@ -36,8 +36,8 @@ if (process.env.NODE_ENV === 'development') {
 
 // General Rate Limiting
 const generalRateLimiter = rateLimit({
-    windowMs: 5 * 60 * 1000, // 5 minutes
-    max: 500,
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100,
     message: "Too many requests, please try again later.",
     standardHeaders: true,
     legacyHeaders: false,
