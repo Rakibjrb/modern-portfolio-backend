@@ -7,11 +7,9 @@ import { TMeta } from "../../../utils/sendResponse";
 import { NodemailerManager } from "../../../managers/nodemailer.manager";
 
 const createContact = async (payload: Partial<IContact>): Promise<IContact> => {
-    console.log("Creating record on DB");
     const result = await Contact.create(payload);
 
     // Send emails asynchronously to user and admin
-    console.log("Sending emails now");
     await NodemailerManager.sendContactEmails({
         name: result.name,
         email: result.email,

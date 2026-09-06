@@ -18,6 +18,7 @@ interface IContactEmailData {
 }
 
 const sendUserConfirmationEmail = (data: IContactEmailData) => {
+    console.log("Sending user confirmation email");
     if (!env.SMTP_USER || !env.SMTP_PASS) {
         console.warn("⚠️ SMTP credentials not configured. Skipping user confirmation email.");
         return;
@@ -56,6 +57,7 @@ const sendUserConfirmationEmail = (data: IContactEmailData) => {
 };
 
 const sendAdminNotificationEmail = (data: IContactEmailData) => {
+    console.log("Sending admin notification email");
 
     const adminEmail = env.ADMIN_EMAIL || env.SMTP_USER;
     if (!env.SMTP_USER || !env.SMTP_PASS || !adminEmail) {
