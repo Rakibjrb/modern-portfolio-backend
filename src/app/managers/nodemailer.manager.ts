@@ -17,9 +17,9 @@ interface IContactEmailData {
     message: string;
 }
 
-const sendUserConfirmationEmail = async (data: IContactEmailData): Promise<void> => {
+const sendUserConfirmationEmail = (data: IContactEmailData) => {
     if (!env.SMTP_USER || !env.SMTP_PASS) {
-        // console.warn("⚠️ SMTP credentials not configured. Skipping user confirmation email.");
+        console.warn("⚠️ SMTP credentials not configured. Skipping user confirmation email.");
         return;
     }
 
@@ -40,35 +40,23 @@ const sendUserConfirmationEmail = async (data: IContactEmailData): Promise<void>
     </div>
     `;
 
-    await new Promise((resolve, reject) => {
-        transporter.verify((error) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(true);
-            }
-        });
-    });
-
-
-    await new Promise((resolve, reject) => {
-        transporter.sendMail({
-            from: `"Portfolio Contact" <${env.SMTP_USER}>`,
-            to: data.email,
-            subject: "Thank you for reaching out!",
-            html: htmlContent,
-            text: data.message,
-        }, (err) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(true);
-            }
-        });
+    transporter.sendMail({
+        from: `"Portfolio Contact" <${env.SMTP_USER}>`,
+        to: data.email,
+        subject: "Thank you for reaching out!",
+        html: htmlContent,
+        text: data.message,
+    }, (err) => {
+        if (err) {
+            console.log("Transporter sendMail problem!", err);
+        } else {
+            console.log("Transporter sendMail success!");
+        }
     });
 };
 
-const sendAdminNotificationEmail = async (data: IContactEmailData): Promise<void> => {
+const sendAdminNotificationEmail = (data: IContactEmailData) => {
+
     const adminEmail = env.ADMIN_EMAIL || env.SMTP_USER;
     if (!env.SMTP_USER || !env.SMTP_PASS || !adminEmail) {
         return;
@@ -87,39 +75,42 @@ const sendAdminNotificationEmail = async (data: IContactEmailData): Promise<void
     </div>
     `;
 
-    await new Promise((resolve, reject) => {
-        transporter.verify((error) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(true);
-            }
-        });
-    });
-
-    await new Promise((resolve, reject) => {
-        transporter.sendMail({
-            from: `"Portfolio Alerts" <${env.SMTP_USER}>`,
-            to: adminEmail,
-            subject: `New Contact Form Submission from ${data.name}`,
-            html: htmlContent,
-            text: data.message,
-        }, (err) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(true);
-            }
-        });
+    transporter.sendMail({
+        from: `"Portfolio Alerts" <${env.SMTP_USER}>`,
+        to: adminEmail,
+        subject: `New Contact Form Submission from ${data.name}`,
+        html: htmlContent,
+        text: data.message,
+    }, (err) => {
+        if (err) {
+            console.log("Transporter sendMail problem!", err);
+        } else {
+            console.log("Transporter sendMail success!");
+        }
     });
 };
 
 export const sendContactEmails = async (data: IContactEmailData): Promise<void> => {
     try {
-        await Promise.allSettled([
-            sendUserConfirmationEmail(data),
-            sendAdminNotificationEmail(data),
-        ]);
+        await new Promise((resolve, reject) => {
+            console.log("SMTP HOST", env.SMTP_HOST);
+            console.log("SMTP PORT", env.SMTP_PORT);
+            console.log("SMTP USER", env.SMTP_USER);
+            console.log("ADMIN EMAIL", env.ADMIN_EMAIL);
+
+            transporter.verify((error) => {
+                console.log("Transporter verifying");
+                if (error) {
+                    console.log("Transporter verification problem!", error);
+                    reject(error);
+                } else {
+                    console.log("Transporter verification success!");
+                    resolve(true);
+                }
+            });
+        });
+        sendUserConfirmationEmail(data);
+        sendAdminNotificationEmail(data);
     } catch (error) {
         console.error("❌ Error sending contact emails:", error);
     }
