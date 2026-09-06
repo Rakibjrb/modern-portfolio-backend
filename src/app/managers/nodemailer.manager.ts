@@ -17,12 +17,7 @@ interface IContactEmailData {
     message: string;
 }
 
-const sendUserConfirmationEmail = (data: IContactEmailData) => {
-    console.log("Sending user confirmation email");
-    if (!env.SMTP_USER || !env.SMTP_PASS) {
-        console.warn("⚠️ SMTP credentials not configured. Skipping user confirmation email.");
-        return;
-    }
+const sendUserConfirmationEmail = async (data: IContactEmailData): Promise<void> => {
 
     const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
@@ -41,28 +36,29 @@ const sendUserConfirmationEmail = (data: IContactEmailData) => {
     </div>
     `;
 
-    transporter.sendMail({
-        from: `"Portfolio Contact" <${env.SMTP_USER}>`,
-        to: data.email,
-        subject: "Thank you for reaching out!",
-        html: htmlContent,
-        text: data.message,
-    }, (err) => {
-        if (err) {
-            console.log("Transporter sendMail problem!", err);
-        } else {
-            console.log("Transporter sendMail success!");
-        }
+    await new Promise((resolve, reject) => {
+        console.log("Sending user confirmation email");
+
+        transporter.sendMail({
+            from: `"Portfolio Contact" <${env.SMTP_USER}>`,
+            to: data.email,
+            subject: "Thank you for reaching out!",
+            html: htmlContent,
+            text: data.message,
+        }, (err) => {
+            if (err) {
+                console.log("Transporter sendMail problem!", err);
+                reject(err);
+            } else {
+                console.log("Transporter sendMail success!");
+                resolve(true);
+            }
+        });
     });
+
 };
 
-const sendAdminNotificationEmail = (data: IContactEmailData) => {
-    console.log("Sending admin notification email");
-
-    const adminEmail = env.ADMIN_EMAIL || env.SMTP_USER;
-    if (!env.SMTP_USER || !env.SMTP_PASS || !adminEmail) {
-        return;
-    }
+const sendAdminNotificationEmail = async (data: IContactEmailData): Promise<void> => {
 
     const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
@@ -74,21 +70,28 @@ const sendAdminNotificationEmail = (data: IContactEmailData) => {
             <p style="margin: 10px 0 0 0; color: #444;">${data.message}</p>
         </div>
         <p style="color: #888; font-size: 12px;">Received at: ${new Date().toLocaleString()}</p>
-    </div>
-    `;
+        </div>
+        `;
 
-    transporter.sendMail({
-        from: `"Portfolio Alerts" <${env.SMTP_USER}>`,
-        to: adminEmail,
-        subject: `New Contact Form Submission from ${data.name}`,
-        html: htmlContent,
-        text: data.message,
-    }, (err) => {
-        if (err) {
-            console.log("Transporter sendMail problem!", err);
-        } else {
-            console.log("Transporter sendMail success!");
-        }
+
+    await new Promise((resolve, reject) => {
+        console.log("Sending admin notification email");
+
+        transporter.sendMail({
+            from: `"Portfolio Alerts" <${env.SMTP_USER}>`,
+            to: env.ADMIN_EMAIL,
+            subject: `New Contact Form Submission from ${data.name}`,
+            html: htmlContent,
+            text: data.message,
+        }, (err) => {
+            if (err) {
+                console.log("Transporter sendMail problem!", err);
+                reject(err);
+            } else {
+                console.log("Transporter sendMail success!");
+                resolve(true);
+            }
+        });
     });
 };
 
@@ -111,8 +114,17 @@ export const sendContactEmails = async (data: IContactEmailData): Promise<void> 
                 }
             });
         });
-        sendUserConfirmationEmail(data);
-        sendAdminNotificationEmail(data);
+
+        await Promise.all([
+            new Promise((resolve) => {
+                sendUserConfirmationEmail(data);
+                resolve(true);
+            }),
+            new Promise((resolve) => {
+                sendAdminNotificationEmail(data);
+                resolve(true);
+            }),
+        ]);
     } catch (error) {
         console.error("❌ Error sending contact emails:", error);
     }
