@@ -10,20 +10,8 @@ import globalErrorHandler from "./app/errors/globalErrorHandler";
 import notFound from "./app/errors/notFound";
 import env from "./app/config/env";
 import apiRouter from "./app/routes/index"
-// import { ITokenPayload } from "./app/modules/shared/auth/interfaces";
 import catchAsync from "./app/utils/catchAsync";
 import { connectDB } from "./app/config/database";
-
-// Extend Express Request interface to include rawBody
-// declare global {
-//     namespace Express {
-//         interface Request {
-//             rawBody?: string;
-//             user: ITokenPayload;
-//         }
-//     }
-// }
-
 
 const app: Application = express();
 
@@ -43,15 +31,6 @@ const generalRateLimiter = rateLimit({
     legacyHeaders: false,
 })
 
-// Webhook rate limiter
-// const webhookRateLimiter = rateLimit({
-//     windowMs: 5 * 6 * 1000,
-//     max: 100,
-//     message: "Too many webhook requests, please try again later.",
-//     standardHeaders: true,
-//     legacyHeaders: false,
-// })
-
 // 2. CORS Setup
 const allAllowedOrigins = [env.FRONTEND_URL, env.ADMIN_DASHBOARD_PANEL_URL]; // incluedes all allowed origins here
 
@@ -63,14 +42,15 @@ export const corsOptions = {
     exposedHeaders: ["X-user-id"],
 }
 
-// 4. General middlewares
+// 3. General middlewares
+app.set('trust proxy', 1);
 app.use(generalRateLimiter);
 app.use(cors(corsOptions));
 
 // Explicitly handle preflight requests
 app.options("*", cors(corsOptions));
 
-// 5. Body parser middlwares
+// 4. Body parser middlwares
 app.use(express.json({
     limit: "1mb",
     verify: (req: Request, res: Response, buff: Buffer) => {
@@ -82,13 +62,13 @@ app.use(express.urlencoded({
 }))
 app.use(cookieParser());
 
-// 6. API routes
+// 5. API routes
 app.use("/api", catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     await connectDB();
     next();
 }), apiRouter);
 
-// 7. Server health check
+// 6. Server health check
 app.get("/", (req: Request, res: Response) => {
     const client = req.headers["user-agent"]?.toLocaleLowerCase();
     const getClientMessage = (clientType: string) => `Welcome to Modern Portfolio ${env.NODE_ENV === "development" ? "development" : "production"} environment API call from ${clientType}`
@@ -106,7 +86,7 @@ app.get("/", (req: Request, res: Response) => {
     })
 });
 
-// 8. Error handling middleware
+// 7. Error handling middleware
 app.use(globalErrorHandler);
 app.use(notFound);
 
