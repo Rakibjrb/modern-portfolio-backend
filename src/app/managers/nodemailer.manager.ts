@@ -36,25 +36,17 @@ const sendUserConfirmationEmail = async (data: IContactEmailData): Promise<void>
     </div>
     `;
 
-    await new Promise((resolve, reject) => {
-        console.log("Sending user confirmation email");
+    console.log("Sending user confirmation email");
 
-        transporter.sendMail({
-            from: `"Portfolio Contact" <${env.SMTP_USER}>`,
-            to: data.email,
-            subject: "Thank you for reaching out!",
-            html: htmlContent,
-            text: data.message,
-        }, (err) => {
-            if (err) {
-                console.log("Transporter sendMail problem!", err);
-                reject(err);
-            } else {
-                console.log("Transporter sendMail success!");
-                resolve(true);
-            }
-        });
+    const info = await transporter.sendMail({
+        from: `"Portfolio Contact" <${env.SMTP_USER}>`,
+        to: data.email,
+        subject: "Thank you for reaching out!",
+        html: htmlContent,
+        text: data.message,
     });
+
+    console.log("Transporter sendMail success (User)! Message ID:", info.messageId);
 
 };
 
@@ -74,25 +66,17 @@ const sendAdminNotificationEmail = async (data: IContactEmailData): Promise<void
         `;
 
 
-    await new Promise((resolve, reject) => {
-        console.log("Sending admin notification email");
+    console.log("Sending admin notification email");
 
-        transporter.sendMail({
-            from: `"Portfolio Alerts" <${env.SMTP_USER}>`,
-            to: env.ADMIN_EMAIL,
-            subject: `New Contact Form Submission from ${data.name}`,
-            html: htmlContent,
-            text: data.message,
-        }, (err) => {
-            if (err) {
-                console.log("Transporter sendMail problem!", err);
-                reject(err);
-            } else {
-                console.log("Transporter sendMail success!");
-                resolve(true);
-            }
-        });
+    const info = await transporter.sendMail({
+        from: `"Portfolio Alerts" <${env.SMTP_USER}>`,
+        to: env.ADMIN_EMAIL,
+        subject: `New Contact Form Submission from ${data.name}`,
+        html: htmlContent,
+        text: data.message,
     });
+
+    console.log("Transporter sendMail success (Admin)! Message ID:", info.messageId);
 };
 
 export const sendContactEmails = async (data: IContactEmailData): Promise<void> => {
@@ -116,14 +100,8 @@ export const sendContactEmails = async (data: IContactEmailData): Promise<void> 
         });
 
         await Promise.all([
-            new Promise((resolve) => {
-                sendUserConfirmationEmail(data);
-                resolve(true);
-            }),
-            new Promise((resolve) => {
-                sendAdminNotificationEmail(data);
-                resolve(true);
-            }),
+            sendUserConfirmationEmail(data),
+            sendAdminNotificationEmail(data)
         ]);
     } catch (error) {
         console.error("❌ Error sending contact emails:", error);
