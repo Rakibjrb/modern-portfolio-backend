@@ -36,8 +36,6 @@ const sendUserConfirmationEmail = async (data: IContactEmailData): Promise<void>
     </div>
     `;
 
-    console.log("Sending user confirmation email");
-
     const info = await transporter.sendMail({
         from: `"Portfolio Contact" <${env.SMTP_USER}>`,
         to: data.email,
@@ -47,7 +45,6 @@ const sendUserConfirmationEmail = async (data: IContactEmailData): Promise<void>
     });
 
     console.log("Transporter sendMail success (User)! Message ID:", info.messageId);
-
 };
 
 const sendAdminNotificationEmail = async (data: IContactEmailData): Promise<void> => {
@@ -82,18 +79,10 @@ const sendAdminNotificationEmail = async (data: IContactEmailData): Promise<void
 export const sendContactEmails = async (data: IContactEmailData): Promise<void> => {
     try {
         await new Promise((resolve, reject) => {
-            console.log("SMTP HOST", env.SMTP_HOST);
-            console.log("SMTP PORT", env.SMTP_PORT);
-            console.log("SMTP USER", env.SMTP_USER);
-            console.log("ADMIN EMAIL", env.ADMIN_EMAIL);
-
             transporter.verify((error) => {
-                console.log("Transporter verifying");
                 if (error) {
-                    console.log("Transporter verification problem!", error);
                     reject(error);
                 } else {
-                    console.log("Transporter verification success!");
                     resolve(true);
                 }
             });
