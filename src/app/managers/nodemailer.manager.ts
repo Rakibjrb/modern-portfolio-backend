@@ -40,19 +40,37 @@ const sendUserConfirmationEmail = async (data: IContactEmailData): Promise<void>
     </div>
     `;
 
-    await transporter.sendMail({
-        from: `"Portfolio Contact" <${env.SMTP_USER}>`,
-        to: data.email,
-        subject: "Thank you for reaching out!",
-        html: htmlContent,
-        text: data.message,
+    await new Promise((resolve, reject) => {
+        transporter.verify((error) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+
+
+    await new Promise((resolve, reject) => {
+        transporter.sendMail({
+            from: `"Portfolio Contact" <${env.SMTP_USER}>`,
+            to: data.email,
+            subject: "Thank you for reaching out!",
+            html: htmlContent,
+            text: data.message,
+        }, (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(true);
+            }
+        });
     });
 };
 
 const sendAdminNotificationEmail = async (data: IContactEmailData): Promise<void> => {
     const adminEmail = env.ADMIN_EMAIL || env.SMTP_USER;
     if (!env.SMTP_USER || !env.SMTP_PASS || !adminEmail) {
-        // console.warn("⚠️ SMTP credentials not configured. Skipping admin notification email.");
         return;
     }
 
@@ -69,12 +87,30 @@ const sendAdminNotificationEmail = async (data: IContactEmailData): Promise<void
     </div>
     `;
 
-    await transporter.sendMail({
-        from: `"Portfolio Alerts" <${env.SMTP_USER}>`,
-        to: adminEmail,
-        subject: `New Contact Form Submission from ${data.name}`,
-        html: htmlContent,
-        text: data.message,
+    await new Promise((resolve, reject) => {
+        transporter.verify((error) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+
+    await new Promise((resolve, reject) => {
+        transporter.sendMail({
+            from: `"Portfolio Alerts" <${env.SMTP_USER}>`,
+            to: adminEmail,
+            subject: `New Contact Form Submission from ${data.name}`,
+            html: htmlContent,
+            text: data.message,
+        }, (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(true);
+            }
+        });
     });
 };
 
