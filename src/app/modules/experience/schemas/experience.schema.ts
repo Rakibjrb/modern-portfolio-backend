@@ -1,7 +1,11 @@
 import { Schema, model } from "mongoose";
-import IExperience from "../interfaces/experience.interface";
+import {
+  IAcademicExperience,
+  IProfessionalExperience,
+} from "../interfaces/experience.interface";
 
-const professionalSchema = new Schema({
+const professionalExperienceSchema = new Schema<IProfessionalExperience>(
+  {
     title: { type: String, required: true },
     organization: { type: String, required: true },
     description: { type: String, required: true },
@@ -11,13 +15,18 @@ const professionalSchema = new Schema({
     achievements: { type: [String], default: [] },
     location: { type: String, required: true },
     type: {
-        type: String,
-        enum: ["Full-time", "Part-time", "Contract", "Internship", "Freelance"],
-        required: true,
+      type: String,
+      enum: ["Full-time", "Part-time", "Contract", "Internship", "Freelance"],
+      required: true,
     },
-});
+  },
+  {
+    timestamps: true,
+  },
+);
 
-const academicSchema = new Schema({
+const academicExperienceSchema = new Schema<IAcademicExperience>(
+  {
     title: { type: String, required: true },
     organization: { type: String, required: true },
     description: { type: String, required: true },
@@ -27,22 +36,18 @@ const academicSchema = new Schema({
     fieldOfStudy: { type: String, required: true },
     result: { type: String, required: true },
     location: { type: String, required: true },
-});
-
-const experienceSchema = new Schema<IExperience>(
-    {
-        professional: {
-            type: [professionalSchema],
-            default: [],
-        },
-        academic: {
-            type: [academicSchema],
-            default: [],
-        },
-    },
-    {
-        timestamps: true,
-    }
+  },
+  {
+    timestamps: true,
+  },
 );
 
-export const Experience = model<IExperience>("Experience", experienceSchema);
+export const ProfessionalExperience = model<IProfessionalExperience>(
+  "ProfessionalExperience",
+  professionalExperienceSchema,
+);
+
+export const AcademicExperience = model<IAcademicExperience>(
+  "AcademicExperience",
+  academicExperienceSchema,
+);

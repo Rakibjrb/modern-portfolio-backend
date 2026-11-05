@@ -5,54 +5,116 @@ import sendResponse from "../../../utils/sendResponse";
 import { ExperienceService } from "../services/experience.services";
 
 const getExperiences = catchAsync(async (req: Request, res: Response) => {
-    const result = await ExperienceService.getExperiences();
+  const result = await ExperienceService.getExperiences();
 
-    sendResponse(req, res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "Experiences retrieved successfully",
-        data: result,
-    });
+  sendResponse(req, res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Experiences retrieved successfully",
+    data: result,
+  });
 });
 
-const createExperience = catchAsync(async (req: Request, res: Response) => {
-    const result = await ExperienceService.createExperience(req.body);
+const createProfessionalExperience = catchAsync(
+  async (req: Request, res: Response) => {
+    const payload = req.body.professional || req.body;
+    const result = await ExperienceService.createProfessionalExperience(payload);
 
     sendResponse(req, res, {
-        statusCode: httpStatus.CREATED,
-        success: true,
-        message: "Experience created successfully",
-        data: result,
+      statusCode: httpStatus.CREATED,
+      success: true,
+      message: "Professional experience created successfully",
+      data: result,
     });
-});
+  },
+);
 
-const updateExperience = catchAsync(async (req: Request, res: Response) => {
+const updateProfessionalExperience = catchAsync(
+  async (req: Request, res: Response) => {
     const { id } = req.params;
-    const result = await ExperienceService.updateExperience(id as string, req.body);
+    const payload = req.body.professional || req.body;
+    const result = await ExperienceService.updateProfessionalExperience(
+      id as string,
+      payload,
+    );
 
     sendResponse(req, res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "Experience updated successfully",
-        data: result,
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Professional experience updated successfully",
+      data: result,
     });
-});
+  },
+);
 
-const deleteExperience = catchAsync(async (req: Request, res: Response) => {
+const deleteProfessionalExperience = catchAsync(
+  async (req: Request, res: Response) => {
     const { id } = req.params;
-    const result = await ExperienceService.deleteExperience(id as string);
+    const result = await ExperienceService.deleteProfessionalExperience(
+      id as string,
+    );
 
     sendResponse(req, res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "Experience deleted successfully",
-        data: result,
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Professional experience deleted successfully",
+      data: result,
     });
-});
+  },
+);
+
+const createAcademicExperience = catchAsync(
+  async (req: Request, res: Response) => {
+    const payload = req.body.academic || req.body;
+    const result = await ExperienceService.createAcademicExperience(payload);
+
+    sendResponse(req, res, {
+      statusCode: httpStatus.CREATED,
+      success: true,
+      message: "Academic experience created successfully",
+      data: result,
+    });
+  },
+);
+
+const updateAcademicExperience = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const payload = req.body.academic || req.body;
+    const result = await ExperienceService.updateAcademicExperience(
+      id as string,
+      payload,
+    );
+
+    sendResponse(req, res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Academic experience updated successfully",
+      data: result,
+    });
+  },
+);
+
+const deleteAcademicExperience = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await ExperienceService.deleteAcademicExperience(id as string);
+
+    sendResponse(req, res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Academic experience deleted successfully",
+      data: result,
+    });
+  },
+);
 
 export const ExperienceController = {
-    getExperiences,
-    createExperience,
-    updateExperience,
-    deleteExperience,
+  getExperiences,
+  createProfessionalExperience,
+  createAcademicExperience,
+  updateProfessionalExperience,
+  updateAcademicExperience,
+  deleteProfessionalExperience,
+  deleteAcademicExperience,
 };
