@@ -42,7 +42,6 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
 
 const refreshAccessToken = catchAsync(async (req: Request, res: Response) => {
   const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
-  console.log({ refreshToken });
   if (!refreshToken) {
     throw new AppError(httpStatus.BAD_REQUEST, "Refresh token is required!");
   }
