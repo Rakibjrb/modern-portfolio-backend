@@ -32,7 +32,7 @@ export class CloudinaryManager {
           return reject(err);
         }
         if (result) {
-          resolve({ url: result.url, public_id: result.public_id });
+          resolve({ url: result.secure_url, public_id: result.public_id });
         }
       });
 
