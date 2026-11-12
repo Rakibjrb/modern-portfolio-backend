@@ -5,6 +5,7 @@ import sendResponse from "../../../utils/sendResponse";
 import { AuthService } from "../services/auth.services";
 import { RequestWithUser } from "../../../types/index.types";
 import AppError from "../../../errors/AppError";
+import { cookieOptions } from "../../../utils/cookieOptions";
 
 const registerUser = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthService.registerUser(req.body);
@@ -22,16 +23,12 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthService.loginUser(req.body, remember);
 
   res.cookie("accessToken", result.accessToken, {
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
-    sameSite: "none",
+    ...cookieOptions,
     maxAge: 15 * 60 * 1000,
   });
 
   res.cookie("refreshToken", result.refreshToken, {
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
-    sameSite: "none",
+    ...cookieOptions,
     maxAge: (remember ? 30 : 7) * 24 * 60 * 60 * 1000,
   });
 
@@ -45,6 +42,7 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
 
 const refreshAccessToken = catchAsync(async (req: Request, res: Response) => {
   const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+  console.log({ refreshToken });
   if (!refreshToken) {
     throw new AppError(httpStatus.BAD_REQUEST, "Refresh token is required!");
   }
@@ -52,16 +50,12 @@ const refreshAccessToken = catchAsync(async (req: Request, res: Response) => {
   const result = await AuthService.refreshAccessToken(refreshToken);
 
   res.cookie("accessToken", result.accessToken, {
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
-    sameSite: "none",
+    ...cookieOptions,
     maxAge: 15 * 60 * 1000,
   });
 
   res.cookie("refreshToken", result.refreshToken, {
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
-    sameSite: "none",
+    ...cookieOptions,
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 

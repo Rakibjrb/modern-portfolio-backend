@@ -15,33 +15,23 @@ const userRouter = Router();
 // );
 
 authRouter.post(
-    "/login",
-    validateRequest(AuthValidation.loginReq),
-    AuthController.loginUser
+  "/login",
+  validateRequest(AuthValidation.loginReq),
+  AuthController.loginUser,
 );
 
-authRouter.post(
-    "/refresh",
-    AuthController.refreshAccessToken
-);
+authRouter.post("/refresh", AuthController.refreshAccessToken);
 
-authRouter.post(
-    "/logout",
-    AuthController.logoutUser
-);
+authRouter.post("/logout", AuthController.logoutUser);
 
-authRouter.get(
-    "/me",
-    auth("super_admin"),
-    AuthController.getMe
-);
+authRouter.get("/me", auth("super_admin"), AuthController.getMe);
 
-userRouter.put(
-    "/:id",
-    auth("super_admin"),
-    validateRequest(AuthValidation.updateUserReq),
-    AuthController.updateUser
-);
+// userRouter.put(
+//     "/:id",
+//     auth("super_admin"),
+//     validateRequest(AuthValidation.updateUserReq),
+//     AuthController.updateUser
+// );
 
 export const AuthRoutes = authRouter;
 export const UserRoutes = userRouter;
