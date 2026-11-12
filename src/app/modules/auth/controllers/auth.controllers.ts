@@ -7,133 +7,138 @@ import { RequestWithUser } from "../../../types/index.types";
 import AppError from "../../../errors/AppError";
 
 const registerUser = catchAsync(async (req: Request, res: Response) => {
-    const result = await AuthService.registerUser(req.body);
+  const result = await AuthService.registerUser(req.body);
 
-    sendResponse(req, res, {
-        statusCode: httpStatus.CREATED,
-        success: true,
-        message: "User registered successfully",
-        data: result,
-    });
+  sendResponse(req, res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "User registered successfully",
+    data: result,
+  });
 });
 
 const loginUser = catchAsync(async (req: Request, res: Response) => {
-    const { remember } = req.body;
-    const result = await AuthService.loginUser(req.body, remember);
+  const { remember } = req.body;
+  const result = await AuthService.loginUser(req.body, remember);
 
-    res.cookie("accessToken", result.accessToken, {
-        secure: process.env.NODE_ENV === "production",
-        httpOnly: true,
-        sameSite: "strict",
-        maxAge: 15 * 60 * 1000,
-    });
+  res.cookie("accessToken", result.accessToken, {
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+    sameSite: "none",
+    maxAge: 15 * 60 * 1000,
+  });
 
-    res.cookie("refreshToken", result.refreshToken, {
-        secure: process.env.NODE_ENV === "production",
-        httpOnly: true,
-        sameSite: "strict",
-        maxAge: (remember ? 30 : 7) * 24 * 60 * 60 * 1000,
-    });
+  res.cookie("refreshToken", result.refreshToken, {
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+    sameSite: "none",
+    maxAge: (remember ? 30 : 7) * 24 * 60 * 60 * 1000,
+  });
 
-    sendResponse(req, res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "User logged in successfully",
-        data: result,
-    });
+  sendResponse(req, res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User logged in successfully",
+    data: result,
+  });
 });
 
 const refreshAccessToken = catchAsync(async (req: Request, res: Response) => {
-    const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
-    if (!refreshToken) {
-        throw new AppError(httpStatus.BAD_REQUEST, "Refresh token is required!");
-    }
+  const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+  if (!refreshToken) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Refresh token is required!");
+  }
 
-    const result = await AuthService.refreshAccessToken(refreshToken);
+  const result = await AuthService.refreshAccessToken(refreshToken);
 
-    res.cookie("accessToken", result.accessToken, {
-        secure: process.env.NODE_ENV === "production",
-        httpOnly: true,
-        sameSite: "strict",
-        maxAge: 15 * 60 * 1000,
-    });
+  res.cookie("accessToken", result.accessToken, {
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+    sameSite: "none",
+    maxAge: 15 * 60 * 1000,
+  });
 
-    res.cookie("refreshToken", result.refreshToken, {
-        secure: process.env.NODE_ENV === "production",
-        httpOnly: true,
-        sameSite: "strict",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+  res.cookie("refreshToken", result.refreshToken, {
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+    sameSite: "none",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
 
-    sendResponse(req, res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "Access token refreshed successfully",
-        data: result,
-    });
+  sendResponse(req, res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Access token refreshed successfully",
+    data: result,
+  });
 });
 
 const logoutUser = catchAsync(async (req: Request, res: Response) => {
-    const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
-    if (refreshToken) {
-        await AuthService.logoutUser(refreshToken);
-    }
+  const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
+  if (refreshToken) {
+    await AuthService.logoutUser(refreshToken);
+  }
 
-    res.clearCookie("refreshToken");
-    res.clearCookie("accessToken");
+  res.clearCookie("refreshToken");
+  res.clearCookie("accessToken");
 
-    sendResponse(req, res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "Logged out successfully",
-        data: null,
-    });
+  sendResponse(req, res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Logged out successfully",
+    data: null,
+  });
 });
 
 const getMe = catchAsync(async (req: Request, res: Response) => {
-    const reqWithUser = req as RequestWithUser;
-    const userId = reqWithUser.user?.id;
-    const result = await AuthService.getMe(userId as string);
+  const reqWithUser = req as RequestWithUser;
+  const userId = reqWithUser.user?.id;
+  const result = await AuthService.getMe(userId as string);
 
-    sendResponse(req, res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "User profile retrieved successfully",
-        data: result,
-    });
+  sendResponse(req, res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User profile retrieved successfully",
+    data: result,
+  });
 });
 
 const listUsers = catchAsync(async (req: Request, res: Response) => {
-    const { page, limit, role, search } = req.query;
-    const result = await AuthService.listUsers(page as string, limit as string, role as string, search as string);
+  const { page, limit, role, search } = req.query;
+  const result = await AuthService.listUsers(
+    page as string,
+    limit as string,
+    role as string,
+    search as string,
+  );
 
-    sendResponse(req, res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "Users retrieved successfully",
-        data: result.data,
-        meta: result.meta
-    });
+  sendResponse(req, res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Users retrieved successfully",
+    data: result.data,
+    meta: result.meta,
+  });
 });
 
 const updateUser = catchAsync(async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const result = await AuthService.updateUser(id as string, req.body);
+  const { id } = req.params;
+  const result = await AuthService.updateUser(id as string, req.body);
 
-    sendResponse(req, res, {
-        statusCode: httpStatus.OK,
-        success: true,
-        message: "User updated successfully",
-        data: result,
-    });
+  sendResponse(req, res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User updated successfully",
+    data: result,
+  });
 });
 
 export const AuthController = {
-    registerUser,
-    loginUser,
-    refreshAccessToken,
-    logoutUser,
-    getMe,
-    listUsers,
-    updateUser,
+  registerUser,
+  loginUser,
+  refreshAccessToken,
+  logoutUser,
+  getMe,
+  listUsers,
+  updateUser,
 };
