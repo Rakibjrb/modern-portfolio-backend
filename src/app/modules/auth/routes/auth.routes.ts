@@ -3,6 +3,7 @@ import validateRequest from "../../../middlewares/validateRequest";
 import { AuthValidation } from "../validations/auth.validations";
 import { AuthController } from "../controllers/auth.controllers";
 import auth from "../../../middlewares/auth.middlewares";
+import { loginRateLimiter } from "../../../middlewares/ratelimiter.middleware";
 
 const authRouter = Router();
 const userRouter = Router();
@@ -16,6 +17,7 @@ const userRouter = Router();
 
 authRouter.post(
   "/login",
+  loginRateLimiter,
   validateRequest(AuthValidation.loginReq),
   AuthController.loginUser,
 );
