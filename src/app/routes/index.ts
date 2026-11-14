@@ -7,42 +7,41 @@ import { ContactRoutes } from "../modules/contact/routes/contact.routes";
 import { ExperienceRoutes } from "../modules/experience/routes/experience.routes";
 
 interface IRoute {
-    path: string;
-    router: Router;
+  path: string;
+  router: Router;
 }
 
 const router = Router();
 
-
 const moduleRoutes: IRoute[] = [
-    {
-        path: "/auth",
-        router: AuthRoutes
-    },
-    {
-        path: "/projects",
-        router: ProjectRoutes
-    },
-    {
-        path: "/public",
-        router: uploadRoutes
-    },
-    {
-        path: "/about",
-        router: AboutRoutes
-    },
-    {
-        path: "/contacts",
-        router: ContactRoutes
-    },
-    {
-        path: "/experiences",
-        router: ExperienceRoutes
-    }
-]
+  {
+    path: "/auth",
+    router: AuthRoutes,
+  },
+  {
+    path: "/projects",
+    router: ProjectRoutes,
+  },
+  {
+    path: "/public",
+    router: uploadRoutes,
+  },
+  {
+    path: "/about",
+    router: AboutRoutes,
+  },
+  {
+    path: "/contacts",
+    router: ContactRoutes,
+  },
+  {
+    path: "/experiences",
+    router: ExperienceRoutes,
+  },
+];
 
 moduleRoutes.forEach((routes: IRoute) => {
-    router.use(routes.path, routes.router)
-})
+  router.use(routes.path, routes.router);
+});
 
 export default router;

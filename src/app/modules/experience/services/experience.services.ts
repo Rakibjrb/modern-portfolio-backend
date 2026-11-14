@@ -1,57 +1,116 @@
 import httpStatus from "http-status";
 import AppError from "../../../errors/AppError";
-import IExperience from "../interfaces/experience.interface";
-import { Experience } from "../schemas/experience.schema";
+import {
+  IAcademicExperience,
+  IProfessionalExperience,
+} from "../interfaces/experience.interface";
+import {
+  AcademicExperience,
+  ProfessionalExperience,
+} from "../schemas/experience.schema";
 
-const getExperiences = async (): Promise<IExperience | null> => {
-    const result = await Experience.findOne();
-    return result;
+const getExperiences = async (): Promise<{
+  professional: IProfessionalExperience[];
+  academic: IAcademicExperience[];
+}> => {
+  const [professional, academic] = await Promise.all([
+    ProfessionalExperience.find().sort({ startDate: -1 }),
+    AcademicExperience.find().sort({ startDate: -1 }),
+  ]);
+
+  return {
+    professional,
+    academic,
+  };
 };
 
-const createExperience = async (payload: Partial<IExperience>): Promise<IExperience> => {
-    const existingExperience = await Experience.findOne();
-    if (existingExperience) {
-        // If an experience record exists, update/merge it
-        const updated = await Experience.findByIdAndUpdate(existingExperience._id, payload, {
-            new: true,
-            runValidators: true,
-        });
-        return updated as IExperience;
-    }
-    const result = await Experience.create(payload);
-    return result;
+const createProfessionalExperience = async (
+  payload: Partial<IProfessionalExperience>,
+): Promise<IProfessionalExperience> => {
+  const result = await ProfessionalExperience.create(payload);
+  return result;
 };
 
-const updateExperience = async (
-    id: string,
-    payload: Partial<IExperience>
-): Promise<IExperience | null> => {
-    const experience = await Experience.findById(id);
-    if (!experience) {
-        throw new AppError(httpStatus.NOT_FOUND, "Experience record not found!");
-    }
+const updateProfessionalExperience = async (
+  id: string,
+  payload: Partial<IProfessionalExperience>,
+): Promise<IProfessionalExperience | null> => {
+  const experience = await ProfessionalExperience.findById(id);
+  if (!experience) {
+    throw new AppError(httpStatus.NOT_FOUND, "Professional experience record not found!");
+  }
 
-    const updatedExperience = await Experience.findByIdAndUpdate(id, payload, {
-        new: true,
-        runValidators: true,
-    });
+  const updatedExperience = await ProfessionalExperience.findByIdAndUpdate(
+    id,
+    payload,
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
 
-    return updatedExperience;
+  return updatedExperience;
 };
 
-const deleteExperience = async (id: string): Promise<IExperience | null> => {
-    const experience = await Experience.findById(id);
-    if (!experience) {
-        throw new AppError(httpStatus.NOT_FOUND, "Experience record not found!");
-    }
+const deleteProfessionalExperience = async (
+  id: string,
+): Promise<IProfessionalExperience | null> => {
+  const experience = await ProfessionalExperience.findById(id);
+  if (!experience) {
+    throw new AppError(httpStatus.NOT_FOUND, "Professional experience record not found!");
+  }
 
-    const deletedExperience = await Experience.findByIdAndDelete(id);
-    return deletedExperience;
+  const deletedExperience = await ProfessionalExperience.findByIdAndDelete(id);
+  return deletedExperience;
+};
+
+const createAcademicExperience = async (
+  payload: Partial<IAcademicExperience>,
+): Promise<IAcademicExperience> => {
+  const result = await AcademicExperience.create(payload);
+  return result;
+};
+
+const updateAcademicExperience = async (
+  id: string,
+  payload: Partial<IAcademicExperience>,
+): Promise<IAcademicExperience | null> => {
+  const experience = await AcademicExperience.findById(id);
+  if (!experience) {
+    throw new AppError(httpStatus.NOT_FOUND, "Academic experience record not found!");
+  }
+
+  const updatedExperience = await AcademicExperience.findByIdAndUpdate(
+    id,
+    payload,
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+
+  return updatedExperience;
+};
+
+const deleteAcademicExperience = async (
+  id: string,
+): Promise<IAcademicExperience | null> => {
+  const experience = await AcademicExperience.findById(id);
+  if (!experience) {
+    throw new AppError(httpStatus.NOT_FOUND, "Academic experience record not found!");
+  }
+
+  const deletedExperience = await AcademicExperience.findByIdAndDelete(id);
+  return deletedExperience;
 };
 
 export const ExperienceService = {
-    getExperiences,
-    createExperience,
-    updateExperience,
-    deleteExperience,
+  getExperiences,
+  createProfessionalExperience,
+  updateProfessionalExperience,
+  deleteProfessionalExperience,
+  createAcademicExperience,
+  updateAcademicExperience,
+  deleteAcademicExperience,
 };
+
